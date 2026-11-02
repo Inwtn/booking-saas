@@ -1,0 +1,16 @@
+server:
+  port: 8082
+  servlet:
+    session:
+      timeout: 30m
+      cookie:
+        http-only: true
+        same-site: lax
+        secure: ${COOKIE_SECURE:false}
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5434/slotwise}
+    username: ${DATABASE_USER:slotwise}
+    password: ${DATABASE_PASSWORD:slotwise}
+  flyway:
+    enabled: true
