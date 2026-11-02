@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: slotwise
+      POSTGRES_USER: slotwise
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-slotwise}
+    ports: ["127.0.0.1:5434:5432"]
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U slotwise -d slotwise"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  app:
+    build: .
+    ports: ["127.0.0.1:8082:8082"]
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/slotwise
+      DATABASE_USER: slotwise
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-slotwise}
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  postgres-data:
